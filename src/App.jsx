@@ -1,14 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, lazy, Suspense } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import Hero from "./components/Hero";
-import About from "./components/About";
-import Navbar from "./components/Navbar";
-import Features from "./components/Features";
-import Footer from "./components/Footer";
+
+// Lazy load components
+const Navbar = lazy(() => import("./components/Navbar"));
+const Hero = lazy(() => import("./components/Hero"));
+const About = lazy(() => import("./components/About"));
+const Features = lazy(() => import("./components/Features"));
+const Footer = lazy(() => import("./components/Footer"));
+
+// Loading fallback component
+const LoadingFallback = () => (
+  <div className="flex items-center justify-center min-h-screen bg-blue-75">
+    <div className="three-body">
+      <div className="three-body__dot" />
+      <div className="three-body__dot" />
+      <div className="three-body__dot" />
+    </div>
+  </div>
+);
 
 function App() {
-  let [showContent, setShowContent] = useState(false);
+  const [showContent, setShowContent] = useState(false);
 
   useGSAP(() => {
     const tl = gsap.timeline();
@@ -27,13 +40,16 @@ function App() {
       opacity: 0,
       onUpdate: function () {
         if (this.progress() >= 0.9) {
-          document.querySelector(".svg").remove();
+          const svgElement = document.querySelector(".svg");
+          if (svgElement) {
+            svgElement.remove();
+          }
           setShowContent(true);
           this.kill();
         }
       },
     });
-  });
+  }, []);
 
   return (
     <main className="relative min-h-screen w-screen overflow-x-hidden">
@@ -46,15 +62,6 @@ function App() {
                 className="mask-content"
                 transform="translate(400, 300) scale(4) translate(-32, -32)"
               >
-                {/* <text
-                  x="50%"
-                  y="50%"
-                  fontSize="100"
-                  textAnchor="middle"
-                  fill="white"
-                  dominantBaseline="middle"
-                  fontFamily="valorant, sans-serif"
-                >Valorant</text> */}
                 <path
                   d="M5 9L5 31 23 54 41 54zM59 9L59 31 53 39 35 39z"
                   fill="white"
@@ -71,16 +78,15 @@ function App() {
           />
         </svg>
       </div>
-      
-      {/* Only render navbar and content after loading completes */}
+
       {showContent && (
-        <>
+        <Suspense fallback={<LoadingFallback />}>
           <Navbar />
           <Hero />
           <About />
           <Features />
           <Footer />
-        </>
+        </Suspense>
       )}
     </main>
   );

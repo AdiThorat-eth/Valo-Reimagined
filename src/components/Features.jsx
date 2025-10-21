@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { TiLocationArrow } from "react-icons/ti"
+import { TiLocationArrow } from "react-icons/ti";
 
 const BentoTilt = ({ children, className = "" }) => {
   const [transformStyle, setTransformStyle] = useState("");
@@ -145,9 +145,14 @@ export const Features = () => {
           </BentoTilt>
         </div>
       </div>
-      <div className="font-zentry text-white text-5xl mt-2 font-thin text-center hover:text-red-500">
-            <a href="https://riotgames.sng.link/Dnyzj/csgh">Download Riot mobile companion app</a>
-          </div>
+      <div className="font-zentry text-white text-5xl font-thin text-center hover:text-red-500 m-2 h-14">
+        <a
+          href="https://riotgames.sng.link/Dnyzj/csgh"
+          className="flex items-center justify-center"
+        >
+          Download Riot mobile companion app
+        </a>
+      </div>
     </section>
   );
 };
