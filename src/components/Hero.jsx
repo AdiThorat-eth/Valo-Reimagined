@@ -49,6 +49,18 @@ function Hero() {
     }
   }, [loadedVideos]);
 
+  // Preload videos more efficiently
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      // Force hide loading after 3 seconds if videos still loading
+      if (loading) {
+        setLoading(false);
+      }
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [loading]);
+
   useGSAP(
     () => {
       if (hasClicked) {
@@ -129,10 +141,11 @@ function Hero() {
             src={getVideoSrc(currentIndex)}
             loop
             muted
-            preload="auto"
+            preload="metadata"
             id="next-video"
             className="absolute-center invisible absolute z-20 size-64 object-cover object-center"
             onLoadedData={handleVideoLoad}
+            playsInline
           />
 
           <video
@@ -140,10 +153,11 @@ function Hero() {
             autoPlay
             loop
             muted
-            preload="auto"
+            preload="metadata"
             playsInline
             className="absolute left-0 top-0 size-full object-cover object-center"
             onLoadedData={handleVideoLoad}
+            onCanPlay={() => setLoading(false)}
           />
         </div>
 

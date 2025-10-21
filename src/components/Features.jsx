@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { TiLocationArrow } from "react-icons/ti";
 
 const BentoTilt = ({ children, className = "" }) => {
@@ -39,13 +39,38 @@ const BentoTilt = ({ children, className = "" }) => {
 };
 
 const BentoCard = ({ src, title, description }) => {
+  const videoRef = useRef(null);
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting);
+      },
+      { threshold: 0.1 }
+    );
+
+    if (videoRef.current) {
+      observer.observe(videoRef.current);
+    }
+
+    return () => {
+      if (videoRef.current) {
+        observer.unobserve(videoRef.current);
+      }
+    };
+  }, []);
+
   return (
     <div className="relative size-full">
       <video
-        src={src}
+        ref={videoRef}
+        src={isInView ? src : ""}
         loop
         muted
         autoPlay
+        playsInline
+        preload="metadata"
         className="absolute left-0 top-0 size-full object-cover object-center"
       />
       <div className="relative z-10 flex size-full flex-col justify-between p-5 text-sky-50">
@@ -59,6 +84,28 @@ const BentoCard = ({ src, title, description }) => {
 };
 
 export const Features = () => {
+  const videoRef5 = useRef(null);
+  const [isVideo5InView, setIsVideo5InView] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVideo5InView(entry.isIntersecting);
+      },
+      { threshold: 0.1 }
+    );
+
+    if (videoRef5.current) {
+      observer.observe(videoRef5.current);
+    }
+
+    return () => {
+      if (videoRef5.current) {
+        observer.unobserve(videoRef5.current);
+      }
+    };
+  }, []);
+
   return (
     <section className="bg-black-900 pb-52">
       <div className="container mx-auto px-3 md:px-10">
@@ -85,7 +132,7 @@ export const Features = () => {
                 <b>Compete Like a Champion</b>
               </>
             }
-            description="Ranking up in Valorant takes more than sharp aim — it's about smart plays, quick decisions, and staying cool under pressure. Whether you're grinding solo or with a team, every match is a step toward proving your skill. Stay focused, play with purpose, and get competitive."
+            description="Ranking up in Valorant takes more than sharp aim – it's about smart plays, quick decisions, and staying cool under pressure. Whether you're grinding solo or with a team, every match is a step toward proving your skill. Stay focused, play with purpose, and get competitive."
           />
         </BentoTilt>
 
@@ -136,10 +183,13 @@ export const Features = () => {
 
           <BentoTilt className="bento-tilt_2 col-span-1">
             <video
-              src="videos/feature-5.mp4"
+              ref={videoRef5}
+              src={isVideo5InView ? "videos/feature-5.mp4" : ""}
               loop
               muted
               autoPlay
+              playsInline
+              preload="metadata"
               className="size-full object-cover object-center"
             />
           </BentoTilt>
